@@ -59,7 +59,7 @@ export default function RegisterPage() {
           <Image
             src={registerHero}
             alt="Shopping illustration"
-          
+          fill
             priority
             className="object-cover"
           />

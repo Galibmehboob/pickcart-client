@@ -56,7 +56,7 @@ export default function LoginPage() {
           <Image
             src={registerHero}
             alt="PickCart Shopping Experience"
-            
+            fill
             priority
             className="object-cover"
           />
