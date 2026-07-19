@@ -29,7 +29,7 @@ const relatedProducts = [
     price: "$229.99",
     rating: 4.9,
     image:
-      "https://images.unsplash.com/photo-1517336714739-489689fd1ca8?q=80&w=900&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1527814050087-3793815479db?q=80&w=900&auto=format&fit=crop",
   },
   {
     id: "4",

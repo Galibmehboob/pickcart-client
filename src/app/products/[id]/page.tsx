@@ -25,7 +25,7 @@ const product = {
   images: [
     "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?q=80&w=800&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1626958390898-162d3577f593?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1527814050087-3793815479db?q=80&w=900&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1595225476474-87563907a212?q=80&w=800&auto=format&fit=crop",
   ],
 };
