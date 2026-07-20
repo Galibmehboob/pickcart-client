@@ -1,19 +1,22 @@
 "use client";
-
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
+
 import {
   BadgeCheck,
   Eye,
-  EyeOff,
+ EyeOff,
   Lock,
   Mail,
   ShieldCheck,
   Truck,
   Headphones,
 } from "lucide-react";
+
 import {
   Button,
   Checkbox,
@@ -24,8 +27,10 @@ import {
   TextField,
 } from "@heroui/react";
 
+import { authClient } from "@/lib/auth-client";
+
 import Logo from "@/components/layout/navbar/Logo";
-import registerHero from "@/assests/images/auth/login-hero.png"; 
+import registerHero from "@/assests/images/auth/login-hero.png";
 
 const features = [
   { title: "Secure Payments", icon: ShieldCheck },
@@ -35,12 +40,58 @@ const features = [
 ] as const;
 
 export default function LoginPage() {
-  const [showPassword, setShowPassword] = useState(false);
+ const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Handle login submission logic
-  };
+const [showPassword, setShowPassword] = useState(false);
+const [loading, setLoading] = useState(false);
+
+const [email, setEmail] = useState("");
+const [password, setPassword] = useState("");
+
+const [errors, setErrors] = useState<Record<string, string>>({});
+ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+
+  const newErrors: Record<string, string> = {};
+
+  if (!email.trim()) {
+    newErrors.email = "Email is required";
+  }
+
+  if (!password.trim()) {
+    newErrors.password = "Password is required";
+  }
+
+  if (Object.keys(newErrors).length) {
+    setErrors(newErrors);
+    return;
+  }
+
+  setErrors({});
+
+  try {
+    setLoading(true);
+
+    const result = await authClient.signIn.email({
+      email,
+      password,
+    });
+
+    if (result.error) {
+      toast.error(result.error.message);
+      return;
+    }
+
+    toast.success("Login successful");
+
+    router.push("/");
+    router.refresh();
+  } catch {
+    toast.error("Login failed");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <main className="min-h-screen w-full bg-background">
@@ -127,7 +178,19 @@ export default function LoginPage() {
                 <Label className="text-sm font-medium text-foreground">Email Address</Label>
                 <div className="relative flex items-center">
                   <Mail className="absolute left-3 h-4 w-4 text-default-400 pointer-events-none" />
-                  <Input placeholder="you@example.com" className="pl-9 w-full" />
+                  <Input
+  placeholder="you@example.com"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  disabled={loading}
+  className="pl-9 w-full"
+/>
+
+{errors.email ? (
+  <p className="text-xs text-danger mt-1">{errors.email}</p>
+) : (
+  <FieldError className="text-xs text-danger mt-1" />
+)}
                 </div>
                 <FieldError className="text-xs text-danger mt-1" />
               </TextField>
@@ -137,7 +200,19 @@ export default function LoginPage() {
                 <Label className="text-sm font-medium text-foreground">Password</Label>
                 <div className="relative flex items-center">
                   <Lock className="absolute left-3 h-4 w-4 text-default-400 pointer-events-none" />
-                  <Input placeholder="Enter your password" className="pl-9 pr-10 w-full" />
+                  <Input
+  placeholder="Enter your password"
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+  disabled={loading}
+  className="pl-9 pr-10 w-full"
+/>
+
+{errors.password ? (
+  <p className="text-xs text-danger mt-1">{errors.password}</p>
+) : (
+  <FieldError className="text-xs text-danger mt-1" />
+)}
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
@@ -152,9 +227,12 @@ export default function LoginPage() {
 
               {/* Remember Me & Forgot Password */}
               <div className="flex items-center justify-between text-sm">
-                <Checkbox name="rememberMe" className="text-sm">
-                  Remember me
-                </Checkbox>
+                <Checkbox
+  isSelected={false}
+  isDisabled={loading}
+>
+  Remember me
+</Checkbox>
                 <Link
                   href="/forgot-password"
                   className="font-medium text-primary hover:underline"
@@ -164,9 +242,13 @@ export default function LoginPage() {
               </div>
 
               {/* Primary Action Button */}
-              <Button type="submit" className="w-full font-medium bg-primary text-primary-foreground py-3 rounded-lg shadow-md transition hover:opacity-90">
-                Login
-              </Button>
+             <Button
+  type="submit"
+  isDisabled={loading}
+  className="w-full font-medium bg-primary text-primary-foreground py-3 rounded-lg"
+>
+  {loading ? "Signing In..." : "Login"}
+</Button>
             </Form>
 
             {/* Custom Semantic Divider */}
@@ -180,12 +262,19 @@ export default function LoginPage() {
             </div>
 
             {/* Social Authentication Button */}
-            <Button
-              type="button"
-              className="w-full font-medium border border-default-200 bg-transparent text-foreground hover:bg-default-100 py-3 rounded-lg transition"
-            >
-              Continue with Google
-            </Button>
+          <Button
+  type="button"
+  isDisabled={loading}
+  onPress={async () => {
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/",
+    });
+  }}
+  className="w-full border border-default-200"
+>
+  Continue with Google
+</Button>
 
             {/* Redirect Footer */}
             <p className="mt-6 text-center text-sm text-default-500">
