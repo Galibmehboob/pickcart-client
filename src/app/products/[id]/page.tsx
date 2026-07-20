@@ -1,60 +1,87 @@
 "use client";
 
-import ProductActions from "@/components/product/ProductActions";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+
+import { getProductById } from "@/services/api";
+import { Product } from "@/types/product";
+
 import ProductGallery from "@/components/product/ProductGallery";
-
-import ProductHighlights from "@/components/product/ProductHighlights";
 import ProductInfo from "@/components/product/ProductInfo";
-
+import ProductActions from "@/components/product/ProductActions";
+import ProductHighlights from "@/components/product/ProductHighlights";
 import ProductTabs from "@/components/product/ProductTabs";
 import RelatedProducts from "@/components/product/RelatedProducts";
 
-
-const product = {
-  id: "1",
-  title: "AeroGlide Pro Wireless Mechanical Keyboard",
-  brand: "OmniTech Labs",
-  category: "Computer Accessories",
-  rating: 4.8,
-  reviewCount: 142,
-  price: 189.99,
-  originalPrice: 249.99,
-  stock: "In Stock (Only 8 left)",
-  description:
-    "Experience unparalleled tactile precision and ultra-low latency typing with the AeroGlide Pro. Featuring hot-swappable custom linear switches, triple-mode connectivity, and a solid premium aircraft-grade aluminum top case.",
-  images: [
-    "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1527814050087-3793815479db?q=80&w=900&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1595225476474-87563907a212?q=80&w=800&auto=format&fit=crop",
-  ],
-};
-
 export default function ProductDetailsPage() {
+  const { id } = useParams();
+
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadProduct() {
+      try {
+        const data = await getProductById(id as string);
+        setProduct(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (id) {
+      loadProduct();
+    }
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="py-20 text-center">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="py-20 text-center">
+        Product not found
+      </div>
+    );
+  }
+
   return (
-    <main className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <section className="grid gap-10 lg:grid-cols-2 lg:items-start">
-        <div className="space-y-8">
-          <ProductGallery
-      images={product.images}
-      title={product.title}
-    />
-        </div>
+    <main className="mx-auto max-w-7xl px-4 py-10">
+      <section className="grid gap-10 lg:grid-cols-2">
+
+        <ProductGallery
+  title={product.name}
+  images={product.image ? [product.image] : []}
+/>
 
         <div className="space-y-8">
          <ProductInfo
-  title={product.title}
+  title={product.name}
   brand={product.brand}
   category={product.category}
-  rating={product.rating}
-  reviewCount={product.reviewCount}
-  price={product.price}
-  originalPrice={product.originalPrice}
-  stock={product.stock}
+ 
+
+  price={Number(product.price ?? 0)}
+  originalPrice={
+    Number(product.discountPrice || product.price || 0)
+  }
+  stock={
+    product.stock > 0
+      ? `In Stock (${product.stock})`
+      : "Out of Stock"
+  }
   description={product.description}
 />
-          <ProductActions />
+          <ProductActions product={product} />
         </div>
+
       </section>
 
       <ProductHighlights />

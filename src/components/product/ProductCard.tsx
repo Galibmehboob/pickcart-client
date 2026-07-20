@@ -25,14 +25,9 @@ export default function ProductCard({
       className="group overflow-hidden rounded-3xl border border-default-200 bg-background shadow-sm transition-shadow duration-300 hover:shadow-xl"
     >
       <div className="relative overflow-hidden">
-        {product.featured && (
-          <Chip
-        
-            className="absolute left-4 top-4 z-10"
-          >
-            Featured
-          </Chip>
-        )}
+        <Chip className="absolute left-4 top-4 z-10">
+          Product
+        </Chip>
 
         <div className="relative aspect-square overflow-hidden bg-default-100">
           <motion.div
@@ -41,9 +36,10 @@ export default function ProductCard({
             className="h-full w-full"
           >
             <Image
-              src={product.thumbnail}
-              alt={product.title}
+              src={product.image || "/placeholder.png"}
+              alt={product.name}
               fill
+              unoptimized
               sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 25vw"
               className="object-cover"
             />
@@ -58,7 +54,7 @@ export default function ProductCard({
           </p>
 
           <h3 className="mt-1 line-clamp-2 text-lg font-semibold text-foreground">
-            {product.title}
+            {product.name}
           </h3>
 
           <p className="mt-1 text-sm text-foreground/60">
@@ -69,12 +65,7 @@ export default function ProductCard({
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center gap-1 text-amber-500">
             <Star className="size-4 fill-current" />
-            <span className="font-medium">
-              {product.rating.rate.toFixed(1)}
-            </span>
-            <span className="text-foreground/60">
-              ({product.rating.count})
-            </span>
+            <span className="font-medium">5.0</span>
           </div>
 
           <div
@@ -83,6 +74,7 @@ export default function ProductCard({
             }`}
           >
             <Package className="size-4" />
+
             <span className="text-sm font-medium">
               {inStock
                 ? `${product.stock} In Stock`
@@ -92,7 +84,7 @@ export default function ProductCard({
         </div>
 
         <div className="flex items-end gap-3">
-          {product.discountPrice !== undefined ? (
+          {product.discountPrice ? (
             <>
               <span className="text-xl font-bold text-primary">
                 {formatPrice(product.discountPrice)}
@@ -110,7 +102,10 @@ export default function ProductCard({
         </div>
 
         <div className="flex gap-3 pt-2">
-          <Link href={`/products/${product._id}`} className="flex-1">
+          <Link
+            href={`/products/${product._id}`}
+            className="flex-1"
+          >
             <Button
               variant="secondary"
               className="w-full"
@@ -120,15 +115,15 @@ export default function ProductCard({
           </Link>
 
           <Button
-  variant="outline"
-  className="flex-1"
-  onPress={() => {
-    // TODO: Implement add-to-cart functionality.
-  }}
->
-  <ShoppingCart className="size-4" />
-  <span>Add To Cart</span>
-</Button>
+            variant="outline"
+            className="flex-1"
+            onPress={() => {
+              // TODO: Add to cart
+            }}
+          >
+            <ShoppingCart className="size-4" />
+            <span>Add To Cart</span>
+          </Button>
         </div>
       </div>
     </motion.article>

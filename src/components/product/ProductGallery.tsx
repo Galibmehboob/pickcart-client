@@ -1,18 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
 interface ProductGalleryProps {
   title: string;
-  images: string[];
+  images?: string[];
 }
 
 export default function ProductGallery({
   title,
-  images,
+  images = [],
 }: ProductGalleryProps) {
+  const galleryImages = useMemo(() => {
+    const validImages = images.filter(
+      (img) => typeof img === "string" && img.trim() !== ""
+    );
+
+    return validImages.length
+      ? validImages
+      : ["/placeholder.jpg"];
+  }, [images]);
+
   const [activeImage, setActiveImage] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [position, setPosition] = useState({
@@ -21,33 +31,22 @@ export default function ProductGallery({
   });
 
   const handleMouseMove = (
-    event: React.MouseEvent<HTMLDivElement>,
+    event: React.MouseEvent<HTMLDivElement>
   ) => {
     const rect = event.currentTarget.getBoundingClientRect();
 
-    const x = ((event.clientX - rect.left) / rect.width) * 100;
-    const y = ((event.clientY - rect.top) / rect.height) * 100;
-
     setPosition({
-      x,
-      y,
+      x: ((event.clientX - rect.left) / rect.width) * 100,
+      y: ((event.clientY - rect.top) / rect.height) * 100,
     });
   };
 
   return (
     <section className="flex flex-col gap-5 lg:sticky lg:top-24">
       <motion.div
-        initial={{
-          opacity: 0,
-          y: 20,
-        }}
-        animate={{
-          opacity: 1,
-          y: 0,
-        }}
-        transition={{
-          duration: 0.4,
-        }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
         className="relative aspect-square overflow-hidden rounded-3xl border bg-content1 shadow-xl"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -66,7 +65,7 @@ export default function ProductGallery({
           className="relative h-full w-full"
         >
           <Image
-            src={images[activeImage]}
+            src={galleryImages[activeImage]}
             alt={title}
             fill
             priority
@@ -77,9 +76,9 @@ export default function ProductGallery({
       </motion.div>
 
       <div className="grid grid-cols-4 gap-4">
-        {images.map((image, index) => (
+        {galleryImages.map((image, index) => (
           <button
-            key={image}
+            key={index}
             type="button"
             onClick={() => setActiveImage(index)}
             className={`relative aspect-square overflow-hidden rounded-2xl border transition-all ${
@@ -90,10 +89,10 @@ export default function ProductGallery({
           >
             <Image
               src={image}
-              alt={`${title} thumbnail ${index + 1}`}
+              alt={`${title} ${index + 1}`}
               fill
               className="object-cover transition duration-300 hover:scale-110"
-              sizes="150px"
+              sizes="120px"
             />
           </button>
         ))}

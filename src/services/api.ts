@@ -26,27 +26,15 @@ async function request<T>(
     body: body !== undefined ? JSON.stringify(body) : undefined,
   });
 
-  const contentType = response.headers.get("content-type");
-
-  let data: unknown = null;
-
-  if (contentType?.includes("application/json")) {
-    data = await response.json();
-  }
+  const json = await response.json();
 
   if (!response.ok) {
-    const message =
-      typeof data === "object" &&
-      data !== null &&
-      "message" in data &&
-      typeof data.message === "string"
-        ? data.message
-        : `Request failed with status ${response.status}`;
-
-    throw new Error(message);
+    throw new Error(
+      json.message || `Request failed with status ${response.status}`
+    );
   }
 
-  return data as T;
+  return json.data as T;
 }
 
 interface GetProductsParams {
@@ -71,40 +59,90 @@ export async function getProducts(
 
   const query = searchParams.toString();
 
-  return request<Product[]>(
-    `/products${query ? `?${query}` : ""}`,
-  );
+return request<Product[]>(`/api/products${query ? `?${query}` : ""}`);
 }
 
 export async function getProductById(
   id: string,
 ): Promise<Product> {
-  return request<Product>(`/products/${id}`);
+  return request<Product>(`/api/products/${id}`);
 }
 
 export async function createProduct(
   data: Product,
 ): Promise<Product> {
-  return request<Product>("/products", {
-    method: "POST",
-    body: data,
-  });
+ return request<Product>("/api/products", {
+  method: "POST",
+  body: data,
+});
 }
 
 export async function updateProduct(
   id: string,
   data: Partial<Product>,
 ): Promise<Product> {
-  return request<Product>(`/products/${id}`, {
-    method: "PATCH",
-    body: data,
-  });
+return request<Product>(`/api/products/${id}`, {
+  method: "PATCH",
+  body: data,
+});
 }
 
 export async function deleteProduct(
   id: string,
 ): Promise<void> {
-  await request<void>(`/products/${id}`, {
+ await request<void>(`/api/products/${id}`, {
+  method: "DELETE",
+});
+}
+
+/* ---------------- CART ---------------- */
+
+export interface CartItem {
+  _id?: string;
+  userId: string;
+  productId: string;
+
+  name: string;
+  image: string;
+
+  price: number;
+
+  quantity: number;
+}
+
+export async function addToCart(
+  data: Omit<CartItem, "_id" | "quantity">
+) {
+  return request("/api/cart", {
+    method: "POST",
+    body: data,
+  });
+}
+
+export async function getCart(userId: string) {
+  return request<CartItem[]>(`/api/cart/${userId}`);
+}
+
+export async function updateCart(
+  id: string,
+  quantity: number
+) {
+  return request(`/api/cart/${id}`, {
+    method: "PATCH",
+    body: {
+      quantity,
+    },
+  });
+}
+
+export async function removeCart(id: string) {
+  return request(`/api/cart/${id}`, {
+    method: "DELETE",
+  });
+}
+
+export async function clearCart(userId: string) {
+  return request(`/api/cart/clear/${userId}`, {
     method: "DELETE",
   });
 }
