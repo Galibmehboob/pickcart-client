@@ -3,22 +3,12 @@
 import { Button, Input } from "@heroui/react";
 import { Ticket, ArrowRight, ShoppingBag } from "lucide-react";
 import Link from "next/link";
-
-interface CartItemType {
-  id: string;
-  title: string;
-  brand: string;
-  category: string;
-  price: number;
-  quantity: number;
-  image: string;
-  inStock: boolean;
-}
+import { CartItem } from "@/services/api";
 
 interface OrderSummaryProps {
-  items: CartItemType[];
+  items: CartItem[];
   couponCode: string;
-  setCouponCode: (code: string) => void;
+  setCouponCode: (value: string) => void;
   isCouponApplied: boolean;
   onApplyCoupon: () => void;
 }
