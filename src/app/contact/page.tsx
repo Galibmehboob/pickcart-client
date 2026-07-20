@@ -11,7 +11,7 @@ import {
   MessageCircleQuestion,
   HelpCircle,
 } from "lucide-react";
-import { Input, Button, Accordion, AccordionItem } from "@heroui/react";
+import { Button, Accordion, AccordionItem } from "@heroui/react";
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -101,53 +101,54 @@ export default function ContactPage() {
           
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <div className="grid md:grid-cols-2 gap-6">
-              <Input
-                type="text"
-                label="Full Name"
-                variant="bordered"
-                radius="xl"
-                classNames={{
-                  inputWrapper: "border-white/10 hover:border-white/20 focus-within:!border-indigo-500/50 bg-black/20 h-12",
-                  label: "text-gray-400 text-xs",
-                }}
-              />
-              <Input
-                type="email"
-                label="Email Address"
-                variant="bordered"
-                radius="xl"
-                classNames={{
-                  inputWrapper: "border-white/10 hover:border-white/20 focus-within:!border-indigo-500/50 bg-black/20 h-12",
-                  label: "text-gray-400 text-xs",
-                }}
-              />
-            </div>
-            <Input
-              type="text"
-              label="Subject"
-              variant="bordered"
-              radius="xl"
-              classNames={{
-                inputWrapper: "border-white/10 hover:border-white/20 focus-within:!border-indigo-500/50 bg-black/20 h-12",
-                label: "text-gray-400 text-xs",
-              }}
-            />
-            
-            {/* Custom Premium Textarea Layer using native textarea with HeroUI matches to completely avoid export mismatch */}
-            <div className="flex flex-col gap-1.5 w-full">
-              <div className="flex flex-col justify-center gap-1 p-4 min-h-[120px] rounded-2xl border border-white/10 hover:border-white/20 focus-within:!border-indigo-500/50 bg-black/20 transition-all duration-150">
-                <label className="text-gray-400 text-xs origin-top-left">Your Message</label>
-                <textarea
-                  className="w-full bg-transparent text-sm text-white outline-none resize-none pt-1"
-                  rows={4}
-                  placeholder="Type your message here..."
+              {/* Full Name Input */}
+              <div className="flex flex-col justify-center gap-1 px-4 h-14 rounded-2xl border border-white/10 hover:border-white/20 focus-within:!border-indigo-500/50 bg-black/20 transition-all duration-150">
+                <label className="text-gray-400 text-xs">Full Name</label>
+                <input
+                  type="text"
+                  required
+                  className="w-full bg-transparent text-sm text-white outline-none pb-1"
+                />
+              </div>
+
+              {/* Email Address Input */}
+              <div className="flex flex-col justify-center gap-1 px-4 h-14 rounded-2xl border border-white/10 hover:border-white/20 focus-within:!border-indigo-500/50 bg-black/20 transition-all duration-150">
+                <label className="text-gray-400 text-xs">Email Address</label>
+                <input
+                  type="email"
+                  required
+                  className="w-full bg-transparent text-sm text-white outline-none pb-1"
                 />
               </div>
             </div>
 
+            {/* Subject Input */}
+            <div className="flex flex-col justify-center gap-1 px-4 h-14 rounded-2xl border border-white/10 hover:border-white/20 focus-within:!border-indigo-500/50 bg-black/20 transition-all duration-150">
+              <label className="text-gray-400 text-xs">Subject</label>
+              <input
+                type="text"
+                required
+                className="w-full bg-transparent text-sm text-white outline-none pb-1"
+              />
+            </div>
+            
+            {/* Custom Premium Textarea Layer */}
+            <div className="flex flex-col justify-center gap-1 p-4 min-h-[120px] rounded-2xl border border-white/10 hover:border-white/20 focus-within:!border-indigo-500/50 bg-black/20 transition-all duration-150">
+              <label className="text-gray-400 text-xs">Your Message</label>
+              <textarea
+                required
+                className="w-full bg-transparent text-sm text-white outline-none resize-none pt-1 placeholder-gray-600"
+                rows={4}
+                placeholder="Type your message here..."
+              />
+            </div>
+
+            {/* HeroUI Button */}
             <Button
               type="submit"
-              className="bg-indigo-600 text-white font-semibold rounded-full h-12 mt-2 shadow-lg shadow-indigo-600/20 hover:bg-indigo-500 transition-colors group flex items-center justify-center gap-2"
+              variant="outline"
+             
+              className="bg-indigo-600 rounded-full text-white font-semibold h-12 mt-2 shadow-lg shadow-indigo-600/20 hover:bg-indigo-500 transition-colors group flex items-center justify-center gap-2"
             >
               Send Message
               <Send className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -155,7 +156,7 @@ export default function ContactPage() {
           </form>
         </motion.div>
 
-        {/* Google Map Placeholder */}
+        {/* Google Map */}
         <motion.div
           initial={{ opacity: 0, x: 30 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -191,72 +192,57 @@ export default function ContactPage() {
           transition={{ duration: 0.6 }}
           className="bg-white/[0.01] border border-white/5 rounded-3xl p-4 md:p-6"
         >
-          <Accordion variant="splitted" className="px-0 flex flex-col gap-3">
-            <AccordionItem
-              key="1"
-              aria-label="Shipping Support"
-              title="How long does international shipping take?"
-              classNames={{
-                base: "bg-white/[0.02] border border-white/5 rounded-2xl !shadow-none before:hidden data-[open=true]:border-indigo-500/30",
-                title: "text-white text-sm font-medium",
-                content: "text-gray-400 text-sm leading-relaxed pt-0 pb-4",
-                trigger: "px-6 py-4",
-              }}
-            >
-              Standard international shipping typically takes between 7 to 14 business days, while express delivery options can reach your destination within 3 to 5 business days. Full tracking visibility is provided via email once dispatched.
-            </AccordionItem>
-            <AccordionItem
-              key="2"
-              aria-label="Refund Policy"
-              title="What is your return and refund protocol?"
-              classNames={{
-                base: "bg-white/[0.02] border border-white/5 rounded-2xl !shadow-none before:hidden data-[open=true]:border-indigo-500/30",
-                title: "text-white text-sm font-medium",
-                content: "text-gray-400 text-sm leading-relaxed pt-0 pb-4",
-                trigger: "px-6 py-4",
-              }}
-            >
-              We offer a premium 30-day hassle-free return window. If you are not completely satisfied, you can initiate a return directly from your profile dashboard. Refunds are securely processed back to the original payment method within 5-7 business days.
-            </AccordionItem>
-            <AccordionItem
-              key="3"
-              aria-label="Delivery Tracking"
-              title="Can I alter my delivery address post-order?"
-              classNames={{
-                base: "bg-white/[0.02] border border-white/5 rounded-2xl !shadow-none before:hidden data-[open=true]:border-indigo-500/30",
-                title: "text-white text-sm font-medium",
-                content: "text-gray-400 text-sm leading-relaxed pt-0 pb-4",
-                trigger: "px-6 py-4",
-              }}
-            >
-              Delivery addresses can be updated within 1 hour of placing your order by contacting Customer Support directly. Once the order status transits to 'Dispatched', we are unable to modify the destination parameters.
-            </AccordionItem>
-            <AccordionItem
-              key="4"
-              aria-label="Seller Operations"
-              title="How do I register as an enterprise Seller?"
-              classNames={{
-                base: "bg-white/[0.02] border border-white/5 rounded-2xl !shadow-none before:hidden data-[open=true]:border-indigo-500/30",
-                title: "text-white text-sm font-medium",
-                content: "text-gray-400 text-sm leading-relaxed pt-0 pb-4",
-                trigger: "px-6 py-4",
-              }}
-            >
-              Enterprises and individual brands can onboard by visiting the Seller Portal link on our navbar. Complete the compliance verification, list your products, and gain instant access to our worldwide database of multi-million active customers.
-            </AccordionItem>
-            <AccordionItem
-              key="5"
-              aria-label="Customer Support VIP"
-              title="Do you offer dedicated customer support infrastructure?"
-              classNames={{
-                base: "bg-white/[0.02] border border-white/5 rounded-2xl !shadow-none before:hidden data-[open=true]:border-indigo-500/30",
-                title: "text-white text-sm font-medium",
-                content: "text-gray-400 text-sm leading-relaxed pt-0 pb-4",
-                trigger: "px-6 py-4",
-              }}
-            >
-              Yes, PickCart provides high-priority technical and transactional live chat infrastructure natively inside the account panel for all registered members, alongside standard operational email modules.
-            </AccordionItem>
+          <Accordion  className="px-0 flex flex-col gap-3">
+            {[
+              {
+                key: "1",
+                label: "Shipping Support",
+                heading: "How long does international shipping take?",
+                content: "Standard international shipping typically takes between 7 to 14 business days, while express delivery options can reach your destination within 3 to 5 business days. Full tracking visibility is provided via email once dispatched."
+              },
+              {
+                key: "2",
+                label: "Refund Policy",
+                heading: "What is your return and refund protocol?",
+                content: "We offer a premium 30-day hassle-free return window. If you are not completely satisfied, you can initiate a return directly from your profile dashboard. Refunds are securely processed back to the original payment method within 5-7 business days."
+              },
+              {
+                key: "3",
+                label: "Delivery Tracking",
+                heading: "Can I alter my delivery address post-order?",
+                content: "Delivery addresses can be updated within 1 hour of placing your order by contacting Customer Support directly. Once the order status transits to 'Dispatched', we are unable to modify the destination parameters."
+              },
+              {
+                key: "4",
+                label: "Seller Operations",
+                heading: "How do I register as an enterprise Seller?",
+                content: "Enterprises and individual brands can onboard by visiting the Seller Portal link on our navbar. Complete the compliance verification, list your products, and gain instant access to our worldwide database of multi-million active customers."
+              },
+              {
+                key: "5",
+                label: "Customer Support VIP",
+                heading: "Do you offer dedicated customer support infrastructure?",
+                content: "Yes, PickCart provides high-priority technical and transactional live chat infrastructure natively inside the account panel for all registered members, alongside standard operational email modules."
+              }
+            ].map((item) => {
+              // any এর বদলে Record<string, unknown> ব্যবহার করে টাইপ সেফ করা হয়েছে
+              const accordionItemProps = {
+                title: item.heading,
+                "aria-label": item.label,
+                classNames: {
+                  base: "bg-white/[0.02] border border-white/5 rounded-2xl !shadow-none before:hidden data-[open=true]:border-indigo-500/30",
+                  title: "text-white text-sm font-medium",
+                  content: "text-gray-400 text-sm leading-relaxed pt-0 pb-4",
+                  trigger: "px-6 py-4",
+                }
+              } as Record<string, unknown>;
+
+              return (
+                <AccordionItem key={item.key} {...accordionItemProps}>
+                  {item.content}
+                </AccordionItem>
+              );
+            })}
           </Accordion>
         </motion.div>
       </section>
@@ -279,7 +265,11 @@ export default function ContactPage() {
             <p className="text-indigo-200/60 mb-8 text-sm leading-relaxed">
               Our enterprise documentation or dedicated customer relationship managers are available for instant query routing.
             </p>
-            <Button className="bg-white text-black h-14 px-10 rounded-full font-bold shadow-xl hover:bg-gray-100 transition-all text-sm">
+            <Button 
+              variant="outline" 
+            
+              className="bg-white text-black rounded-full h-14 px-10 font-bold shadow-xl hover:bg-gray-100 transition-all text-sm"
+            >
               Open Live Support Chat
             </Button>
           </div>
