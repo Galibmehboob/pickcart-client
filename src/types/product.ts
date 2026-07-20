@@ -5,19 +5,24 @@ export interface ProductRating {
 
 export interface Product {
   _id: string;
-  title: string;
-  slug: string;
-  description: string;
-  price: number;
-  discountPrice?: number;
+  sellerId: string;
+  sellerEmail: string;
+
+  name: string;
   category: string;
   brand: string;
-  images: string[];
-  thumbnail: string;
+
+  price: number;
+  discountPrice: number;
+
   stock: number;
-  rating: ProductRating;
-  featured: boolean;
-  specifications: Record<string, string>;
+
+  image: string;
+
+  description: string;
+
+  status: "Active" | "Low Stock" | "Out of Stock";
+
   createdAt: string;
   updatedAt: string;
 }
