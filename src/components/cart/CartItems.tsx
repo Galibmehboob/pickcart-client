@@ -2,20 +2,12 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import CartItem from "./CartItem";
+import { CartItem as CartType } from "@/services/api";
 
-interface CartItemType {
-  id: string;
-  title: string;
-  brand: string;
-  category: string;
-  price: number;
-  quantity: number;
-  image: string;
-  inStock: boolean;
-}
+
 
 interface CartItemsProps {
-  items: CartItemType[];
+  items: CartType[];
   onUpdateQuantity: (id: string, quantity: number) => void;
   onRemoveItem: (id: string) => void;
 }
@@ -26,7 +18,7 @@ export default function CartItems({ items, onUpdateQuantity, onRemoveItem }: Car
       <AnimatePresence mode="popLayout">
         {items.map((item) => (
           <motion.div
-            key={item.id}
+            key={item._id}
             layout
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
