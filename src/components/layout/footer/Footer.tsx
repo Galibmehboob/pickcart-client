@@ -24,7 +24,7 @@ const quickLinks = [
 const customerLinks = [
   { label: "My Account", href: "/login" },
   { label: "Cart", href: "/cart" },
-  { label: "Orders", href: "/orders" },
+  // { label: "Orders", href: "/orders" },
   { label: "Dashboard", href: "/dashboard" },
 ] as const;
 

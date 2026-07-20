@@ -1,4 +1,4 @@
-# PickCart
+<!-- # PickCart
 
 PickCart is a modern full-stack e-commerce platform built with Next.js, Express.js, MongoDB, and Better Auth. It provides a complete shopping experience for customers and a dedicated dashboard for sellers to manage products.
 
@@ -233,4 +233,4 @@ DELETE /api/cart/:id
 
 ## Author
 
-Galib Mehboob
+Galib Mehboob -->

@@ -233,12 +233,12 @@ const [errors, setErrors] = useState<Record<string, string>>({});
 >
   Remember me
 </Checkbox>
-                <Link
+                {/* <Link
                   href="/forgot-password"
                   className="font-medium text-primary hover:underline"
                 >
                   Forgot password?
-                </Link>
+                </Link> */}
               </div>
 
               {/* Primary Action Button */}
