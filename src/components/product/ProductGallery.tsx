@@ -40,7 +40,8 @@ export default function ProductGallery({
       y: ((event.clientY - rect.top) / rect.height) * 100,
     });
   };
-
+console.log("Gallery Images:", galleryImages);
+console.log("Active Image:", galleryImages[activeImage]);
   return (
     <section className="flex flex-col gap-5 lg:sticky lg:top-24">
       <motion.div
@@ -69,6 +70,7 @@ export default function ProductGallery({
             alt={title}
             fill
             priority
+            unoptimized
             className="object-cover"
             sizes="(max-width:1024px)100vw,55vw"
           />
@@ -91,6 +93,7 @@ export default function ProductGallery({
               src={image}
               alt={`${title} ${index + 1}`}
               fill
+               unoptimized  
               className="object-cover transition duration-300 hover:scale-110"
               sizes="120px"
             />

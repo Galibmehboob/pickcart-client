@@ -42,7 +42,8 @@ export default function ProductActions({
       toast.error("Please login first.");
       return;
     }
-
+ console.log(session.user);
+  console.log(product);
     try {
       await addToCart({
         userId: session.user.id,

@@ -36,7 +36,15 @@ async function request<T>(
 
   return json.data as T;
 }
-
+export interface ProductsResponse {
+  data: Product[];
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
 interface GetProductsParams {
   page?: number;
   limit?: number;
@@ -44,11 +52,14 @@ interface GetProductsParams {
   category?: string;
   sort?: string;
   featured?: boolean;
+
+  minPrice?: number;
+  maxPrice?: number;
 }
 
 export async function getProducts(
   params: GetProductsParams = {},
-): Promise<Product[]> {
+): Promise<ProductsResponse> {
   const searchParams = new URLSearchParams();
 
   Object.entries(params).forEach(([key, value]) => {
@@ -59,7 +70,18 @@ export async function getProducts(
 
   const query = searchParams.toString();
 
-return request<Product[]>(`/api/products${query ? `?${query}` : ""}`);
+  const response = await fetch(
+    `${BASE_URL}/api/products${query ? `?${query}` : ""}`,
+    {
+      credentials: "include",
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch products.");
+  }
+
+  return response.json();
 }
 
 export async function getProductById(
@@ -144,5 +166,28 @@ export async function removeCart(id: string) {
 export async function clearCart(userId: string) {
   return request(`/api/cart/clear/${userId}`, {
     method: "DELETE",
+  });
+}
+
+/* ---------------- AI ---------------- */
+
+export interface AIHistory {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export async function chatWithAI(
+  message: string,
+  history: {
+    role: "user" | "assistant";
+    content: string;
+  }[]
+) {
+  return request<string>("/api/ai/chat", {
+    method: "POST",
+    body: {
+      message,
+      history,
+    },
   });
 }

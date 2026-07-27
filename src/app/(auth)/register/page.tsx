@@ -199,6 +199,7 @@ setPreview(previewUrl);
             fill
             priority
             className="object-cover"
+            sizes="(max-width: 768px) 100vw, 50vw"
           />
 
           <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-black/30" />
@@ -281,6 +282,7 @@ setPreview(previewUrl);
                       alt="Avatar Preview"
                       fill
                       className="object-cover"
+                      
                     />
                   ) : (
                     <User className="h-10 w-10 text-default-400" />

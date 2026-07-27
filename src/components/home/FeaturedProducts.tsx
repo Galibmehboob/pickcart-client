@@ -11,15 +11,17 @@ import ProductCard from "@/components/product/ProductCard";
 import { getProducts } from "@/services/api";
 
 export default function FeaturedProducts() {
-  const {
-    data: products,
-    isPending,
-    isError,
-    refetch,
-  } = useQuery({
-    queryKey: ["featured-products"],
-    queryFn: () => getProducts({ featured: true }),
-  });
+ const {
+  data,
+  isPending,
+  isError,
+  refetch,
+} = useQuery({
+  queryKey: ["featured-products"],
+  queryFn: () => getProducts({ featured: true }),
+});
+
+const products = data?.data ?? [];
 
   if (isPending) {
     return <Loader text="Loading featured products..." />;

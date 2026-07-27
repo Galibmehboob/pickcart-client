@@ -110,6 +110,7 @@ const [errors, setErrors] = useState<Record<string, string>>({});
             fill
             priority
             className="object-cover"
+            sizes="(max-width: 768px) 100vw, 50vw"
           />
 
           <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-black/30" />

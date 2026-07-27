@@ -1,2 +1,11 @@
 @import "tailwindcss";
 @import "@heroui/styles"; 
+
+::-webkit-scrollbar{
+width:6px;
+}
+
+::-webkit-scrollbar-thumb{
+background:#999;
+border-radius:20px;
+}
