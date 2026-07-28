@@ -117,9 +117,7 @@ console.log("USER:", session?.user);
 
             {!isPending && user && (
               <>
-<div>
-    ROLE: {user.role}
-  </div>
+
                 {user.role === "customer" && (
                   <Link href="/cart">
                     <Button variant="outline">
