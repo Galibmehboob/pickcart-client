@@ -36,6 +36,35 @@ async function request<T>(
 
   return json.data as T;
 }
+export interface PlaceOrderPayload {
+  userId: string;
+
+ customer: {
+  fullName: string;
+  email: string;
+  phone: string;
+  country: string;
+  city: string;
+  area: string;
+  streetAddress: string;
+  postalCode: string;
+  paymentMethod: "cod" | "card";
+  orderNotes: string;
+};
+  items: {
+  productId: string;
+  sellerId: string;
+  sellerEmail: string;
+  name: string;
+  image: string;
+  price: number;
+  quantity: number;
+}[];
+
+  total: number;
+
+  paymentMethod: string;
+}
 export interface ProductsResponse {
   data: Product[];
   meta: {
@@ -121,14 +150,17 @@ export async function deleteProduct(
 
 export interface CartItem {
   _id?: string;
+
   userId: string;
   productId: string;
+
+  sellerId: string;
+  sellerEmail: string;
 
   name: string;
   image: string;
 
   price: number;
-
   quantity: number;
 }
 
@@ -208,5 +240,94 @@ export async function generateDescription(
       method: "POST",
       body: payload,
     }
+  );
+}
+export async function placeOrder(
+  data: PlaceOrderPayload
+) {
+  return request("/api/orders", {
+    method: "POST",
+    body: data,
+  });
+}
+
+export interface Order {
+  _id: string;
+
+  userId: string;
+
+  customer: {
+    fullName: string;
+    email: string;
+    phone: string;
+    country: string;
+    city: string;
+    area: string;
+    streetAddress: string;
+    postalCode: string;
+    paymentMethod: "cod" | "card";
+    orderNotes: string;
+  };
+
+  items: {
+    productId: string;
+    name: string;
+    image: string;
+    price: number;
+    quantity: number;
+  }[];
+
+  total: number;
+
+  paymentMethod: string;
+
+  status: string;
+
+  createdAt: string;
+}
+
+export async function getMyOrders(
+  userId: string
+) {
+  return request<Order[]>(
+    `/api/orders/${userId}`
+  );
+}
+interface SellerOrder {
+  _id: string;
+  userId: string;
+
+  total: number;
+
+  status: string;
+
+  createdAt: string;
+
+  customer: {
+    fullName: string;
+
+    phone: string;
+  };
+
+  items: {
+    productId: string;
+
+    sellerId: string;
+
+    sellerEmail: string;
+
+    name: string;
+
+    quantity: number;
+
+    price: number;
+  }[];
+}
+
+export async function getSellerOrders(
+  sellerId: string
+) {
+  return request<SellerOrder[]>(
+    `/api/orders/seller/${sellerId}`
   );
 }

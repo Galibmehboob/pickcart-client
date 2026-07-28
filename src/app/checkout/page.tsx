@@ -1,8 +1,14 @@
 "use client";
 
-import { useState } from "react";
+
 import CheckoutForm from "@/components/checkout/CheckoutForm";
 import OrderSummary from "@/components/checkout/OrderSummary";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
+import { getCart, placeOrder } from "@/services/api";
+import { toast } from "sonner";
+import type { CartItem } from "@/services/api";
 
 interface CheckoutFormData {
   fullName: string;
@@ -18,6 +24,11 @@ interface CheckoutFormData {
 }
 
 export default function CheckoutPage() {
+  const { data: session } = authClient.useSession();
+
+const [cartItems, setCartItems] =
+  useState<CartItem[]>([]);
+const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState<CheckoutFormData>({
     fullName: "",
     email: "",
@@ -35,9 +46,64 @@ export default function CheckoutPage() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handlePlaceOrder = () => {
-    // Structural placeholder for future production endpoint
+ const handlePlaceOrder = async () => {
+  if (!session?.user) return;
+
+  try {
+    const total = cartItems.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+
+    await placeOrder({
+      userId: session.user.id,
+
+      customer: formData,
+
+   items: cartItems.map((item) => ({
+  productId: item.productId,
+  sellerId: item.sellerId,
+  sellerEmail: item.sellerEmail,
+  name: item.name,
+  image: item.image,
+  price: item.price,
+  quantity: item.quantity,
+})),
+
+      total,
+
+      paymentMethod: formData.paymentMethod,
+    });
+
+    toast.success("Order placed successfully.");
+
+    router.push("/dashboard/orders");
+  } catch (error) {
+    console.error(error);
+
+    toast.error("Failed to place order.");
+  }
+};
+
+  const router = useRouter();
+
+
+
+useEffect(() => {
+  const loadCart = async () => {
+    if (!session?.user) return;
+
+    try {
+      const cart = await getCart(session.user.id);
+
+      setCartItems(cart);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  loadCart();
+}, [session]);
 
   return (
     <main className="min-h-screen w-full bg-background text-foreground px-4 py-8 md:px-8 lg:px-16 xl:px-24">
@@ -49,7 +115,11 @@ export default function CheckoutPage() {
             <CheckoutForm formData={formData} onInputChange={handleInputChange} />
           </div>
           <div className="lg:col-span-4 w-full lg:sticky lg:top-8">
-            <OrderSummary onPlaceOrder={handlePlaceOrder} />
+            <OrderSummary
+  items={cartItems}
+  loading={loading}
+  onPlaceOrder={handlePlaceOrder}
+/>
           </div>
         </div>
       </div>

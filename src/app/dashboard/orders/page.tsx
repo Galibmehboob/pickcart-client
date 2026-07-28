@@ -1,17 +1,60 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Eye } from "lucide-react";
 import { Button } from "@heroui/react";
 
-export default function OrdersPage() {
-  const orders = [
-    { id: "ORD-9982", date: "2026-07-18", items: 3, total: "$129.99", status: "Completed" },
-    { id: "ORD-9981", date: "2026-07-16", items: 1, total: "$89.50", status: "Pending" },
-    { id: "ORD-9980", date: "2026-07-12", items: 5, total: "$45.00", status: "Completed" },
-    { id: "ORD-9979", date: "2026-07-05", items: 2, total: "$310.00", status: "Cancelled" },
-  ];
+import { authClient } from "@/lib/auth-client";
+import {
+  getMyOrders,
+  Order,
+} from "@/services/api";
 
+export default function OrdersPage() {
+  const { data: session } =
+  authClient.useSession();
+
+const [orders, setOrders] = useState<
+  Order[]
+>([]);
+
+const [loading, setLoading] =
+  useState(true);
+
+  useEffect(() => {
+  if (!session?.user.id) return;
+
+  const loadOrders = async () => {
+    try {
+      const data = await getMyOrders(
+        session.user.id
+      );
+
+      setOrders(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  loadOrders();
+}, [session]);
+if (loading) {
+  return (
+    <div className="p-8">
+      Loading...
+    </div>
+  );
+}
+if (orders.length === 0) {
+  return (
+    <div className="p-8 text-center">
+      No orders found.
+    </div>
+  );
+}
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -36,11 +79,11 @@ export default function OrdersPage() {
           </thead>
           <tbody className="divide-y divide-default-100/60 font-medium">
             {orders.map((order) => (
-              <tr key={order.id} className="text-foreground hover:bg-default-100/20 transition-colors">
-                <td className="py-3.5 pr-4 font-bold">{order.id}</td>
-                <td className="py-3.5 px-4 text-default-500">{order.date}</td>
-                <td className="py-3.5 px-4 text-default-500">{order.items} items</td>
-                <td className="py-3.5 px-4 font-bold">{order.total}</td>
+              <tr key={order._id} className="text-foreground hover:bg-default-100/20 transition-colors">
+                <td className="py-3.5 pr-4 font-bold">#{order._id.slice(-8).toUpperCase()}</td>
+                <td className="py-3.5 px-4 text-default-500">{new Date(order.createdAt).toLocaleDateString()}</td>
+                <td className="py-3.5 px-4 text-default-500">{order.items.length} items</td>
+                <td className="py-3.5 px-4 font-bold">${order.total.toFixed(2)}</td>
                 <td className="py-3.5 px-4">
                   <span
                     className={`text-[10px] font-bold px-2 py-0.5 rounded-full inline-block ${

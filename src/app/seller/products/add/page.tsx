@@ -364,13 +364,17 @@ handleChange("description",e.target.value)
         </div>
 
         <div className="flex justify-end pt-2">
-         <Button
-type="submit"
-isDisabled={loading}
-size="md"
-className="font-bold text-xs rounded-xl h-10 px-6 bg-foreground text-background dark:bg-foreground dark:text-background shadow-md transition-transform active:scale-[0.98]"
+       <Button
+  type="submit"
+  isDisabled={loading || imageUploading}
+  size="md"
+  className="font-bold text-xs rounded-xl h-10 px-6 bg-foreground text-background dark:bg-foreground dark:text-background shadow-md transition-transform active:scale-[0.98]"
 >
-{loading ? "Publishing..." : "Publish Asset"}
+  {loading
+    ? "Publishing..."
+    : imageUploading
+    ? "Uploading Image..."
+    : "Publish Asset"}
 </Button>
         </div>
       </form>

@@ -46,13 +46,18 @@ export default function ProductActions({
  console.log("IMAGE:", product.image);
 console.log(product);
     try {
-      await addToCart({
-        userId: session.user.id,
-        productId: product._id,
-        name: product.name,
-        image: product.image,
-        price: product.price,
-      });
+     await addToCart({
+  userId: session.user.id,
+
+  productId: product._id,
+
+  sellerId: product.sellerId,
+  sellerEmail: product.sellerEmail,
+
+  name: product.name,
+  image: product.image,
+  price: product.price,
+});
 
       toast.success("Added to cart.");
     } catch (error) {
