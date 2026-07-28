@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
+import { generateDescription } from "@/services/api";
 import { motion } from "framer-motion";
 import {
   PlusCircle,
@@ -24,6 +24,15 @@ export default function AddProductPage() {
 const { user } = useSession();
 
 const [loading, setLoading] = useState(false);
+const [aiLoading, setAiLoading] = useState(false);
+const [descriptionLength, setDescriptionLength] =
+  useState("medium");
+
+const [keywords, setKeywords] =
+  useState("");
+
+const [aiGenerated, setAiGenerated] =
+  useState(false);
 const [image, setImage] = useState("");
 const [imageUploading, setImageUploading] = useState(false);
 const [formData, setFormData] = useState({
@@ -46,6 +55,51 @@ const handleChange = (
     [field]: value,
   }));
 };
+
+const handleGenerateDescription =
+  async () => {
+    if (
+      !formData.name ||
+      !formData.category ||
+      !formData.brand
+    ) {
+      toast.error(
+        "Fill Product Name, Category and Brand first."
+      );
+      return;
+    }
+
+    try {
+      setAiLoading(true);
+
+     const description =
+  await generateDescription({
+    name: formData.name,
+    category: formData.category,
+    brand: formData.brand,
+    keywords,
+    length: descriptionLength,
+  });
+
+      setFormData((prev) => ({
+        ...prev,
+        description,
+      }));
+setAiGenerated(true);
+      toast.success(
+        "AI generated description."
+      );
+    } catch (error) {
+      console.log(error);
+
+      toast.error(
+        "AI generation failed."
+      );
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
 
 const handleSubmit = async (
   e: React.FormEvent<HTMLFormElement>
@@ -134,6 +188,7 @@ handleChange("category",e.target.value)
               <Info className="text-default-400 h-3.5 w-3.5 flex-shrink-0" />
               <Input placeholder="e.g. Sony, Logitech"  
               value={formData.brand}
+              
 
 onChange={(e)=>
 handleChange("brand",e.target.value)
@@ -141,6 +196,47 @@ handleChange("brand",e.target.value)
               className="w-full bg-transparent text-xs outline-none border-none focus:ring-0 p-0 text-foreground placeholder:text-default-400" />
             </div>
           </div>
+
+<div className="flex flex-col gap-1.5 md:col-span-2">
+  <label className="text-[11px] font-bold text-default-500 uppercase tracking-wider">
+    AI Keywords
+  </label>
+
+  <Input
+    placeholder="Organic, Hair Growth, Vitamin E"
+    value={keywords}
+    onChange={(e) =>
+      setKeywords(e.target.value)
+    }
+  />
+  <div className="flex flex-col gap-1.5">
+  <label className="text-[11px] font-bold text-default-500 uppercase tracking-wider">
+    Description Length
+  </label>
+
+  <select
+    value={descriptionLength}
+    onChange={(e) =>
+      setDescriptionLength(
+        e.target.value
+      )
+    }
+    className="h-10 rounded-xl border border-default-300 bg-background px-3 text-sm"
+  >
+    <option value="short">
+      Short
+    </option>
+
+    <option value="medium">
+      Medium
+    </option>
+
+    <option value="long">
+      Long
+    </option>
+  </select>
+</div>
+</div>
 
           <div className="flex flex-col gap-1.5">
             <label className="text-[11px] font-bold text-default-500 uppercase tracking-wider">Base Price (USD)</label>
@@ -226,6 +322,35 @@ handleChange("stock",e.target.value)
 
           <div className="flex flex-col gap-1.5 md:col-span-2">
             <label className="text-[11px] font-bold text-default-500 uppercase tracking-wider">Product Narrative Description</label>
+            {aiGenerated && (
+  <div className="mb-2 text-xs font-medium text-primary">
+    ✨ AI Generated
+  </div>
+)}
+            <div className="flex justify-end mb-2">
+  <div className="mb-3 flex justify-end gap-2">
+  <Button
+    size="sm"
+    onPress={handleGenerateDescription}
+    isDisabled={aiLoading}
+  >
+    {aiLoading
+      ? "🤖 AI is writing..."
+      : "Generate with AI"}
+  </Button>
+
+  {aiGenerated && (
+    <Button
+      size="sm"
+      variant="outline"
+      onPress={handleGenerateDescription}
+      isDisabled={aiLoading}
+    >
+      Regenerate
+    </Button>
+  )}
+</div>
+</div>
             <div className="flex items-start gap-2 border border-default-200 min-h-24 bg-background/50 rounded-xl px-3 py-2 focus-within:border-primary transition-colors">
               <textarea placeholder="Outline comprehensive specifications, parameters, and functional capabilities..." 
               value={formData.description}

@@ -191,3 +191,22 @@ export async function chatWithAI(
     },
   });
 }
+export interface GenerateDescriptionPayload {
+  name: string;
+  category: string;
+  brand: string;
+  keywords: string;
+  length: string;
+}
+
+export async function generateDescription(
+  payload: GenerateDescriptionPayload
+) {
+  return request<string>(
+    "/api/ai/generate-description",
+    {
+      method: "POST",
+      body: payload,
+    }
+  );
+}

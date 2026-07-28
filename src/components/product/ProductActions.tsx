@@ -43,7 +43,8 @@ export default function ProductActions({
       return;
     }
  console.log(session.user);
-  console.log(product);
+ console.log("IMAGE:", product.image);
+console.log(product);
     try {
       await addToCart({
         userId: session.user.id,
