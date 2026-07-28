@@ -148,7 +148,6 @@ export default function ProductCard({ product }: ProductCardProps) {
   isDisabled={!inStock}
   className="w-full font-medium shadow-md rounded-lg shadow-primary/20 flex items-center gap-2 justify-center"
   onPress={() => {
-    // TODO: Add to cart action
   }}
 >
   <ShoppingCart className="size-4" />
