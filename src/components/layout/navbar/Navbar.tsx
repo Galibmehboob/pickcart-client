@@ -37,6 +37,7 @@ const user = session?.user;
 // console.log("SESSION DATA:", session);
 // console.log("USER DATA:", user);
 console.log("ROLE:", user?.role);
+console.log("USER:", session?.user);
   const handleLogout = async () => {
     await authClient.signOut();
 
