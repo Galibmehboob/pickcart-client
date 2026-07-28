@@ -58,7 +58,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             className="h-full w-full"
           >
             <Image
-              src={product.image || "/placeholder.png"}
+              src={product.image }
               alt={product.name}
               fill
               unoptimized
