@@ -14,11 +14,12 @@ import {
   Dropdown,
 } from "@heroui/react";
 
-import { authClient, useSession } from "@/lib/auth-client";
+import { authClient} from "@/lib/auth-client";
 
 import Logo from "./Logo";
 import NavLinks from "./NavLinks";
 import MobileMenu from "./MobileMenu";
+import { useSession } from "@/hooks/useSession";
 
 
 export default function Navbar() {
